@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -28,6 +29,40 @@ def check_bound(rect: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 
+def gameover(screen: pg.Surface) -> None:
+    """
+    ゲームオーバー画面を表示
+    """
+    ss_img = pg.Surface((1100, 650))  # 追加課題1-1：空のSurface
+    
+    ss_img.set_alpha(200)  # 追加課題1-2 透明にする
+    
+    fonto = pg.font.Font(None, 80)  # 追加課題1-2：フォントサイズ80
+    txt = fonto.render("Game Over", True, (255, 255, 255))  # 追加課題1-2：Game Overインスタンス作成
+    ss_img.blit(txt, [400, 300])  #追加課題1-2：文字をビルド
+
+    koukaton_img = pg.image.load("fig/8.png")  # 追加課題1-3：こうかとんロード
+    ss_img.blit(koukaton_img, [325, 300])  # 追加課題1-3：左こうかとんビルド
+    ss_img.blit(koukaton_img, [730, 300])  # 追加課題1-3：右こうかとんビルド
+    
+    screen.blit(ss_img, [0, 0])  # 追加課題1-4：surfaceをビルド
+
+    pg.display.update()  # 追加課題1-6：画面アップデート
+    time.sleep(5)  # 追加課題1-6：５秒待機
+
+
+# def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]
+#     bb_imgs = []
+#     for r in range(1, 11):
+#         bb_img = pg.Surface((20*r, 20*r))
+#         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+#         bb_imgs.append(bb_img)
+
+#     bb_accs = [a for a in range(1, 11)]
+
+#     return bb_img, bb_accs
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -44,6 +79,7 @@ def main():
     vx , vy = +5, +5  #練習2：爆弾の初期速度
     clock = pg.time.Clock()
     tmr = 0
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -52,6 +88,7 @@ def main():
 
         if kk_rct.colliderect(bb_rct):  # 練習4：kkとbbのrectが重なっていたら
             print("game over")
+            gameover(screen)
             return
 
         key_lst = pg.key.get_pressed()
@@ -69,16 +106,20 @@ def main():
                 sum_mv[0] += tpl[0]  # 横方向移動量
                 sum_mv[1] += tpl[1]  # 縦方向移動量
         kk_rct.move_ip(sum_mv)
+        
         if check_bound(kk_rct) != (True, True):  # どこかしらはみ出てる
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  # 先程の動きをキャンセルする
         screen.blit(kk_img, kk_rct)
-
         bb_rct.move_ip(vx, vy)  # 練習2：爆弾動く
+                
         yoko, tate = check_bound(bb_rct)
+        
         if not yoko:  # yoko == False
             vx *= -1
+        
         if not tate:  # tate == False
             vy *= -1
+        
         screen.blit(bb_img, bb_rct)  # 練習2：爆弾表示
         pg.display.update()
         tmr += 1
