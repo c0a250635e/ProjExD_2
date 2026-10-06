@@ -51,18 +51,6 @@ def gameover(screen: pg.Surface) -> None:
     time.sleep(5)  # 追加課題1-6：５秒待機
 
 
-# def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]
-#     bb_imgs = []
-#     for r in range(1, 11):
-#         bb_img = pg.Surface((20*r, 20*r))
-#         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
-#         bb_imgs.append(bb_img)
-
-#     bb_accs = [a for a in range(1, 11)]
-
-#     return bb_img, bb_accs
-
-
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -93,14 +81,7 @@ def main():
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
-        # if key_lst[pg.K_UP]:
-        #     sum_mv[1] -= 5
-        # if key_lst[pg.K_DOWN]:
-        #     sum_mv[1] += 5
-        # if key_lst[pg.K_LEFT]:
-        #     sum_mv[0] -= 5
-        # if key_lst[pg.K_RIGHT]:
-        #     sum_mv[0] += 5
+        
         for k, tpl in DELTA.items():
             if key_lst[k]:
                 sum_mv[0] += tpl[0]  # 横方向移動量
